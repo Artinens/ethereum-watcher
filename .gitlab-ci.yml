@@ -1,0 +1,21 @@
+stages:
+  - image
+  - deployment
+
+before_script:
+  - export SHORTSHA=${CI_COMMIT_SHA:0:8}
+  - chmod a+x ci-scripts/*.sh
+
+image:build:
+  stage: image
+  when: manual
+  script:
+    - ./ci-scripts/image-build.sh
+
+deployment:update:
+  stage: deployment
+  when: manual
+  dependencies:
+    - image:build
+  script:
+    - ./ci-scripts/deployment-update.sh
